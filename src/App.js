@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+import './scss/app.scss';
+import Header from './components/Header';
+import Categories from './components/Categories';
+import Sort from './components/Sort';
+import PizzaBlock from './components/PizzaBlock';
+import Skeleton from './components/PizzaBlock/Skeleton';
 
 function App() {
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsloading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://62be93bf0bc9b125615a3b4a.mockapi.io/items')
+      .then((resp) => resp.json())
+      .then((data) => {
+        setItems(data);
+        setIsloading(false);
+      });
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="wrapper">
+      <Header />
+      <div className="content">
+        <div className="container">
+          <div className="content__top">
+            <Categories />
+            <Sort />
+          </div>
+          <h2 className="content__title">Все пиццы</h2>
+          <div className="content__items">
+            {isLoading
+              ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
+              : items.map((item) => {
+                  return <PizzaBlock key={item.id} {...item} />;
+                })}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
