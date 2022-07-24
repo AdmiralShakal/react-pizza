@@ -1,12 +1,15 @@
 import { useState } from 'react';
 
-function Sort() {
-  const [curentSort, setCurentSort] = useState(0);
+function Sort({ index, handleChangeSort }) {
   const [isPoopupActive, setIsPoopupActive] = useState(false);
-  const sortList = ['популярности', 'цене', 'алфавиту'];
+  const sortList = [
+    { name: 'популярности', sort: 'rating' },
+    { name: 'цене', sort: 'price' },
+    { name: 'алфавиту', sort: 'title' },
+  ];
 
   const handleChoose = (id) => {
-    setCurentSort(id);
+    handleChangeSort(id);
     setIsPoopupActive(false);
   };
 
@@ -25,7 +28,7 @@ function Sort() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsPoopupActive(!isPoopupActive)}>{sortList[curentSort]}</span>
+        <span onClick={() => setIsPoopupActive(!isPoopupActive)}>{index.name}</span>
       </div>
       {isPoopupActive && (
         <div className="sort__popup">
@@ -34,9 +37,9 @@ function Sort() {
               return (
                 <li
                   key={id}
-                  onClick={() => handleChoose(id)}
-                  className={curentSort === id ? 'active' : ''}>
-                  {item}
+                  onClick={() => handleChoose(item)}
+                  className={index.sort === item.sort ? 'active' : ''}>
+                  {item.name}
                 </li>
               );
             })}
