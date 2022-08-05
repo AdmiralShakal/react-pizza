@@ -5,43 +5,41 @@ import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 
-const Home = () => {
+const Home = ({ searchValues }) => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsloading] = useState(true);
-  const [sortId, setSortId] = useState({
+  const [sortObj, setSortObj] = useState({
     name: 'популярности',
     sort: 'rating',
   });
   const [categoriId, setCategoryId] = useState(0);
+  const category = categoriId > 0 ? `category=${categoriId}` : '';
+  const search = searchValues > 0 ? `&search=${searchValues}` : '';
 
   useEffect(() => {
     setIsloading(true);
     fetch(
-      `https://62be93bf0bc9b125615a3b4a.mockapi.io/items?${
-        categoriId > 0 ? `category=${categoriId}` : ''
-      }&sortBy=${sortId.sort}`,
+      `https://62be93bf0bc9b125615a3b4a.mockapi.io/items?${category}${search}&sortBy=${sortObj.sort}`,
     )
       .then((resp) => resp.json())
       .then((data) => {
         setItems(data);
         setIsloading(false);
       });
-  }, [categoriId, sortId]);
+  }, [categoriId, sortObj, searchValues]);
+
+  const pizzas = items.map((item) => <PizzaBlock key={item.id} {...item} />);
+
+  const skeletons = [...new Array(6)].map((_, i) => <Skeleton key={i} />);
 
   return (
     <>
       <div className="content__top">
         <Categories index={categoriId} handleChangeCategory={(id) => setCategoryId(id)} />
-        <Sort index={sortId} handleChangeSort={(id) => setSortId(id)} />
+        <Sort itemObj={sortObj} handleChangeSort={(id) => setSortObj(id)} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoading
-          ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
-          : items.map((item) => {
-              return <PizzaBlock key={item.id} {...item} />;
-            })}
-      </div>
+      <div className="content__items">{isLoading ? skeletons : pizzas}</div>
     </>
   );
 };

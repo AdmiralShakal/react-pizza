@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function Sort({ index, handleChangeSort }) {
+function Sort({ itemObj, handleChangeSort }) {
   const [isPoopupActive, setIsPoopupActive] = useState(false);
   const sortList = [
     { name: 'популярности', sort: 'rating' },
@@ -28,7 +28,7 @@ function Sort({ index, handleChangeSort }) {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsPoopupActive(!isPoopupActive)}>{index.name}</span>
+        <span onClick={() => setIsPoopupActive(!isPoopupActive)}>{itemObj.name}</span>
       </div>
       {isPoopupActive && (
         <div className="sort__popup">
@@ -38,7 +38,7 @@ function Sort({ index, handleChangeSort }) {
                 <li
                   key={id}
                   onClick={() => handleChoose(item)}
-                  className={index.sort === item.sort ? 'active' : ''}>
+                  className={itemObj.sort === item.sort ? 'active' : ''}>
                   {item.name}
                 </li>
               );
